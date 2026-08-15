@@ -3,6 +3,10 @@ const { hideBin } = require("yargs/helpers");
 
 const { initRepo } = require("./controllers/init");
 const { addRepo } = require("./controllers/add");
+const { commitRepo } = require("./controllers/commit");
+const { pushRepo } = require("./controllers/push");
+const { pullRepo } = require("./controllers/pull");
+const { revertRepo } = require("./controllers/revert");
 yargs(hideBin(process.argv))
   .command(
     "init",
@@ -20,6 +24,25 @@ yargs(hideBin(process.argv))
     });
   },
   addRepo
+)
+
+  .command("commit <message>", "Commit changes to the repository", (yargs) => {
+    return yargs.positional("message", {
+      describe: "Commit message",
+      type: "string",
+    });
+  },
+  commitRepo
+)
+  .command("push", "Push commits to S3 ", {}, pushRepo)
+  .command("pull", "Pull commits from S3", {}, pullRepo)
+  .command("revert <commitId>", "Revert to a specific commit", (yargs) => {
+    return yargs.positional("commitId", {
+      describe: "Commit ID to revert to",
+      type: "string",
+    });
+  },
+  revertRepo
 )
   .help()
   .argv;
